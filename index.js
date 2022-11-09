@@ -18,9 +18,8 @@ const client = new MongoClient(uri, {
 });
 async function run() {
   try {
-    const servicesCollection = client
-      .db("maya-kitchen-corner")
-      .collection("services");
+    const servicesCollection = client.db("maya-kitchen-corner").collection("services");
+    const reviewsCollection = client.db("maya-kitchen-corner").collection("reviews");
 
     app.get("/home/services", async (req, res) => {
       const query = {};
@@ -41,6 +40,13 @@ async function run() {
       console.log(service);
       res.send(service);
     });
+
+    app.post("/reviews",async(req,res)=>{
+        const review = req.body;
+        const result = await reviewsCollection.insertOne(review)
+        res.send(result)
+    })
+
   } finally {
   }
 }

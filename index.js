@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const port = process.env.PORT || 5000;
 const cors = require("cors");
 require("dotenv").config();
@@ -18,14 +18,29 @@ const client = new MongoClient(uri, {
 });
 async function run() {
   try {
-    const servicesCollection = client.db("maya-kitchen-corner").collection("services");
-    
+    const servicesCollection = client
+      .db("maya-kitchen-corner")
+      .collection("services");
+
     app.get("/home/services", async (req, res) => {
-        const query = {}
-        const services = await servicesCollection.find(query).limit(3).toArray()
-        res.send(services);
+      const query = {};
+      const services = await servicesCollection.find(query).limit(3).toArray();
+      res.send(services);
     });
 
+    app.get("/services", async (req, res) => {
+      const query = {};
+      const services = await servicesCollection.find(query).toArray();
+      res.send(services);
+    });
+
+    app.get("/service/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const service = await servicesCollection.findOne(query);
+      console.log(service);
+      res.send(service);
+    });
   } finally {
   }
 }

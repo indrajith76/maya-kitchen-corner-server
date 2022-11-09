@@ -54,7 +54,15 @@ async function run() {
     app.get("/reviews/:serviceId", async (req, res) => {
       const id = req.params.serviceId;
       const query = { serviceId: id };
-      const review = await reviewsCollection.find(query).toArray();
+      const review = await reviewsCollection.find(query).sort ( { date: -1 } ).toArray();
+      res.send(review);
+    });
+
+    app.get("/myreviews/:userId", async (req, res) => {
+      const id = req.params.userId;
+      console.log(id)
+      const query = { userId: id };
+      const review = await reviewsCollection.find(query).sort ( { date: -1 } ).toArray();
       res.send(review);
     });
   } finally {

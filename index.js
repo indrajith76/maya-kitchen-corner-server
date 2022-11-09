@@ -18,8 +18,12 @@ const client = new MongoClient(uri, {
 });
 async function run() {
   try {
-    const servicesCollection = client.db("maya-kitchen-corner").collection("services");
-    const reviewsCollection = client.db("maya-kitchen-corner").collection("reviews");
+    const servicesCollection = client
+      .db("maya-kitchen-corner")
+      .collection("services");
+    const reviewsCollection = client
+      .db("maya-kitchen-corner")
+      .collection("reviews");
 
     app.get("/home/services", async (req, res) => {
       const query = {};
@@ -37,16 +41,22 @@ async function run() {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const service = await servicesCollection.findOne(query);
-      console.log(service);
       res.send(service);
     });
 
-    app.post("/reviews",async(req,res)=>{
-        const review = req.body;
-        const result = await reviewsCollection.insertOne(review)
-        res.send(result)
-    })
+    // review
+    app.post("/reviews", async (req, res) => {
+      const review = req.body;
+      const result = await reviewsCollection.insertOne(review);
+      res.send(result);
+    });
 
+    app.get("/reviews/:serviceId", async (req, res) => {
+      const id = req.params.serviceId;
+      const query = { serviceId: id };
+      const review = await reviewsCollection.find(query).toArray();
+      res.send(review);
+    });
   } finally {
   }
 }

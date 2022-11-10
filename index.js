@@ -54,16 +54,47 @@ async function run() {
     app.get("/reviews/:serviceId", async (req, res) => {
       const id = req.params.serviceId;
       const query = { serviceId: id };
-      const review = await reviewsCollection.find(query).sort ( { date: -1 } ).toArray();
+      const review = await reviewsCollection
+        .find(query)
+        .sort({ date: -1 })
+        .toArray();
       res.send(review);
     });
 
     app.get("/myreviews/:userId", async (req, res) => {
       const id = req.params.userId;
-      console.log(id)
       const query = { userId: id };
-      const review = await reviewsCollection.find(query).sort ( { date: -1 } ).toArray();
+      const review = await reviewsCollection
+        .find(query)
+        .sort({ date: -1 })
+        .toArray();
       res.send(review);
+    });
+
+    app.get("/myreview/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const myReview = await reviewsCollection.findOne(query);
+      res.send(myReview);
+    });
+
+    app.put("/myreview/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const review = req.body;
+      const option = { upsert: true };
+      const updatedReview = {
+        $set: {
+          reviewMessage: review.review,
+          ratingReview: review.rating,
+        },
+      };
+      const result = await reviewsCollection.updateOne(
+        filter,
+        updatedReview,
+        option
+      );
+      res.send(result);
     });
   } finally {
   }

@@ -27,13 +27,13 @@ async function run() {
 
     app.get("/home/services", async (req, res) => {
       const query = {};
-      const services = await servicesCollection.find(query).limit(3).toArray();
+      const services = await servicesCollection.find(query).sort({ _id: -1 }).limit(3).toArray();
       res.send(services);
     });
 
     app.get("/services", async (req, res) => {
       const query = {};
-      const services = await servicesCollection.find(query).toArray();
+      const services = await servicesCollection.find(query).sort({ _id: -1 }).toArray();
       res.send(services);
     });
 

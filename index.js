@@ -96,6 +96,13 @@ async function run() {
       );
       res.send(result);
     });
+
+    app.delete("/myreview/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await reviewsCollection.deleteOne(query);
+      res.send(result);
+    });
   } finally {
   }
 }
